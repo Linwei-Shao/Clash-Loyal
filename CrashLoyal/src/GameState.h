@@ -24,7 +24,6 @@ const float RIVER_RIGHT_X = GAME_GRID_WIDTH;
 const float RIVER_TOP_Y = (GAME_GRID_HEIGHT / 2) - 1.5;
 const float RIVER_BOT_Y = (GAME_GRID_HEIGHT / 2) + 1.5;
 
-
 // Defining sizes of the bridges
 const float BRIDGE_WIDTH = 3;
 const float BRIDGE_HEIGHT = 3.5;

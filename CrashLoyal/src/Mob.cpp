@@ -46,12 +46,12 @@ bool Mob::findClosestWaypoint() {
 		//std::shared_ptr<Waypoint> wp = GameState::waypoints[i];
 		// Filter out any waypoints that are "behind" us (behind is relative to attack dir
 		// Remember y=0 is in the top left
-		if (attackingNorth && wp->pos.y > this->pos.y) {
-			continue;
-		}
-		else if ((!attackingNorth) && wp->pos.y < this->pos.y) {
-			continue;
-		}
+		//if (attackingNorth && wp->pos.y > this->pos.y) {
+		//	continue;
+		//}
+		//else if ((!attackingNorth) && wp->pos.y < this->pos.y) {
+		//	continue;
+		//}
 
 		float dist = this->pos.dist(wp->pos);
 		if (dist < smallestDist) {
@@ -153,6 +153,89 @@ bool Mob::targetInRange() {
 //  1) return a vector of mobs that we're colliding with
 //  2) handle collision with towers & river 
 std::shared_ptr<Mob> Mob::checkCollision() {
+	float avg = (this->GetSize() + KingTowerSize) / 2;
+	if ((abs(this->pos.x - PrincessLeftX) < avg &&
+		 abs(this->pos.y - NorthPrincessY) < avg)
+		|| (abs(this->pos.x - PrincessRightX) < avg &&
+			abs(this->pos.y - NorthPrincessY) < avg)) {
+		Point tmp;
+		tmp.x = this->pos.x;
+		tmp.y = this->pos.y + 1.0;
+
+		this->moveTowards(std::make_shared<Point>(tmp), 1);
+		this->findClosestWaypoint();
+	}
+
+	if (abs(this->pos.x - KingX) < avg &&
+		abs(this->pos.y - NorthKingY) < avg) {
+		Point tmp;
+		tmp.x = this->pos.x;
+		tmp.y = this->pos.y + 1.0;
+
+		this->moveTowards(std::make_shared<Point>(tmp), 1);
+		this->findClosestWaypoint();
+	}
+
+	if ((abs(this->pos.x - PrincessLeftX) < avg &&
+		abs(this->pos.y - SouthPrincessY) < avg)
+		|| (abs(this->pos.x - PrincessRightX) < avg &&
+			abs(this->pos.y - SouthPrincessY) < avg)) {
+		Point tmp;
+		tmp.x = this->pos.x;
+		tmp.y = this->pos.y - 1.0;
+
+		this->moveTowards(std::make_shared<Point>(tmp), 1);
+		this->findClosestWaypoint();
+	}
+
+	if (abs(this->pos.x - KingX) < avg &&
+		abs(this->pos.y - SouthKingY) < avg) {
+		Point tmp;
+		tmp.x = this->pos.x;
+		tmp.y = this->pos.y - 1.0;
+
+		this->moveTowards(std::make_shared<Point>(tmp), 1);
+		this->findClosestWaypoint();
+	}
+
+	if ((int)this->pos.y == (int)RIVER_TOP_Y) {
+		if(this->pos.x > (LEFT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) &&
+			this->pos.x < ((LEFT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0) + BRIDGE_WIDTH)))
+		{ }
+		else if(this->pos.x > (RIGHT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) &&
+			this->pos.x < ((RIGHT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) +BRIDGE_WIDTH))
+		{ }
+		else
+		{
+			Point tmp;
+			tmp.x = this->pos.x - 1.0;
+			tmp.y = this->pos.y - 1.0;
+
+			this->moveTowards(std::make_shared<Point>(tmp), 1);
+			this->findClosestWaypoint();
+		}
+		//this->targetLocked = false;
+	}
+	if ((int)this->pos.y == (int)RIVER_BOT_Y) {
+		if (this->pos.x > (LEFT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) &&
+			this->pos.x < ((LEFT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0) + BRIDGE_WIDTH)))
+		{
+		}
+		else if (this->pos.x > (RIGHT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) &&
+			this->pos.x < ((RIGHT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) + BRIDGE_WIDTH))
+		{
+		}
+		else
+		{
+			Point tmp;
+			tmp.x = this->pos.x + 1.0;
+			tmp.y = this->pos.y + 1.0;
+
+			this->moveTowards(std::make_shared<Point>(tmp), 1);
+			this->findClosestWaypoint();
+		}
+		//this->targetLocked = false;
+	}
 	for (std::shared_ptr<Mob> otherMob : GameState::mobs) {
 		// don't collide with yourself
 		if (this->sameMob(otherMob)) { continue; }
@@ -175,21 +258,24 @@ void Mob::processCollision(std::shared_ptr<Mob> otherMob, double elapsedTime) {
 
 	if (frt - scd > 0) {
 		Point tmp = otherMob->pos;
-		tmp.x -= 1.0;
-		tmp.y -= 1.0;
+		tmp.x -= 10.0;
+		tmp.y -= 10.0;
 		otherMob->moveTowards(std::make_shared<Point>(tmp), elapsedTime);
 	}
 
 	else if (frt - scd < 0) {
 		Point tmp = this->pos;
-		tmp.x -= 1.0;
-		tmp.y -= 1.0;
+		tmp.x -= 10.0;
+		tmp.y -= 10.0;
 		this->moveTowards(std::make_shared<Point>(tmp), elapsedTime);
 	}
 	else {
 		float spd = this->GetSpeed() > otherMob->GetSpeed() ?
 			otherMob->GetSpeed() : this->GetSpeed();
-		
+		Point tmp = this->pos;
+		tmp.x -= 20.0;
+		//tmp.y -= 1.0;
+		this->moveTowards(std::make_shared<Point>(tmp), elapsedTime); 
 	}
 }
 
@@ -233,11 +319,10 @@ void Mob::moveProcedure(double elapsedTime) {
 
 		// PROJECT 3: You should not change this code very much, but this is where your 
 		// collision code will be called from
-		std::shared_ptr<Mob> otherMob = this->checkCollision();
+ 		std::shared_ptr<Mob> otherMob = this->checkCollision();
 		if (otherMob) {
 			this->processCollision(otherMob, elapsedTime);
 		}
-
 		// Fighting otherMob takes priority always
 		findAndSetAttackableMob();
 
