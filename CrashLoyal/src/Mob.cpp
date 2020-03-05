@@ -160,19 +160,19 @@ std::shared_ptr<Mob> Mob::checkCollision() {
 			abs(this->pos.y - NorthPrincessY) < avg)) {
 		Point tmp;
 		tmp.x = this->pos.x;
-		tmp.y = this->pos.y + 1.0;
+		tmp.y = this->pos.y + 10.0;
 
-		this->moveTowards(std::make_shared<Point>(tmp), 1);
+		this->moveTowards(std::make_shared<Point>(tmp), 4);
 		this->findClosestWaypoint();
 	}
 
 	if (abs(this->pos.x - KingX) < avg &&
-		abs(this->pos.y - NorthKingY) < avg) {
+		abs(this->pos.y - NorthKingY) < avg){
 		Point tmp;
 		tmp.x = this->pos.x;
-		tmp.y = this->pos.y + 1.0;
+		tmp.y = this->pos.y + 10.0;
 
-		this->moveTowards(std::make_shared<Point>(tmp), 1);
+		this->moveTowards(std::make_shared<Point>(tmp), 3);
 		this->findClosestWaypoint();
 	}
 
@@ -182,9 +182,9 @@ std::shared_ptr<Mob> Mob::checkCollision() {
 			abs(this->pos.y - SouthPrincessY) < avg)) {
 		Point tmp;
 		tmp.x = this->pos.x;
-		tmp.y = this->pos.y - 1.0;
+		tmp.y = this->pos.y - 10.0;
 
-		this->moveTowards(std::make_shared<Point>(tmp), 1);
+		this->moveTowards(std::make_shared<Point>(tmp), 4);
 		this->findClosestWaypoint();
 	}
 
@@ -192,9 +192,9 @@ std::shared_ptr<Mob> Mob::checkCollision() {
 		abs(this->pos.y - SouthKingY) < avg) {
 		Point tmp;
 		tmp.x = this->pos.x;
-		tmp.y = this->pos.y - 1.0;
+		tmp.y = this->pos.y - 10.0;
 
-		this->moveTowards(std::make_shared<Point>(tmp), 1);
+		this->moveTowards(std::make_shared<Point>(tmp), 3);
 		this->findClosestWaypoint();
 	}
 
@@ -208,10 +208,10 @@ std::shared_ptr<Mob> Mob::checkCollision() {
 		else
 		{
 			Point tmp;
-			tmp.x = this->pos.x - 1.0;
-			tmp.y = this->pos.y - 1.0;
+			tmp.x = this->pos.x - 20.0;
+			tmp.y = this->pos.y - 20.0;
 
-			this->moveTowards(std::make_shared<Point>(tmp), 1);
+			this->moveTowards(std::make_shared<Point>(tmp), 10);
 			this->findClosestWaypoint();
 		}
 		//this->targetLocked = false;
@@ -228,10 +228,10 @@ std::shared_ptr<Mob> Mob::checkCollision() {
 		else
 		{
 			Point tmp;
-			tmp.x = this->pos.x + 1.0;
-			tmp.y = this->pos.y + 1.0;
+			tmp.x = this->pos.x + 20.0;
+			tmp.y = this->pos.y + 20.0;
 
-			this->moveTowards(std::make_shared<Point>(tmp), 1);
+			this->moveTowards(std::make_shared<Point>(tmp), 10);
 			this->findClosestWaypoint();
 		}
 		//this->targetLocked = false;
